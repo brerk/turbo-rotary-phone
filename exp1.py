@@ -1,7 +1,7 @@
 import sys
 from time import sleep
 
-from LCD_Manager import send_data, init_lcd, send_command
+from LCD_Manager import send_data, init_lcd, send_command, set_position
 from DS18B20_Sensor import read_temp
 
 """
@@ -16,6 +16,7 @@ def main():
     while True:
 
         try:
+            set_position(0, 0)
             temp = read_temp()
 
             disp_text = f"{temp:3.3f} °C"
