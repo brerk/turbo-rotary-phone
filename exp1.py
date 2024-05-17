@@ -9,6 +9,8 @@ from DS18B20_Sensor import read_temp
 segundo.
 """
 
+DEGREES_CHAR = chr(0b11011111)
+
 
 def main():
     init_lcd()
@@ -19,7 +21,7 @@ def main():
             set_position(0, 0)
             temp = read_temp()
 
-            disp_text = f"{temp:3.3f} °C"
+            disp_text = f"{temp:3.3f} {DEGREES_CHAR}C"
             print(disp_text)
 
             for c in disp_text:
