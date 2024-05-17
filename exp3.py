@@ -26,7 +26,7 @@ def main():
         try:
             temp_c = read_temp()
 
-            disp_text = f"{temp_c:3.3f} °C"
+            disp_text = f"{temp_c:3.3f} {chr(0b11011111)}C"
 
             display_text(disp_text)
 

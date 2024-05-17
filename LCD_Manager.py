@@ -84,12 +84,20 @@ def right_shift():
 
 def set_position(row: int, column: int):
     if column < 0 or column > 16:
+        print(f"invalid {row=} {column=}")
         return
 
     if row < 0 or row > 1:
+        print(f"invalid {row=} {column=}")
         return
 
-    send_command(0x80 + 0x40 * column + row)
+    match row:
+        case 0:
+            send_command(0x80 + column)
+        case 1:
+            send_command(0xC0 + column)
+        case _:
+            print(f"unmatched {row=} {column=}")
 
 
 def send_routine(raw_data: int, mode=True):
