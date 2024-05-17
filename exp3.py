@@ -9,23 +9,26 @@ en grados centígrados registrada por el DS18B20, actualizada cada segundo.
 """
 
 
+def display_text(text):
+    for c in text:
+        send_data(ord(c))
+
+
 def main():
     init_lcd()
 
     disp_text = "Bravo"
-    send_data(disp_text)
-
-    set_position(1, 0)
+    display_text(disp_text)
 
     while True:
+        set_position(1, 0)
 
         try:
             temp_c = read_temp()
 
             disp_text = f"{temp_c:3.3f} °C"
 
-            for c in disp_text:
-                send_data(ord(c))
+            display_text(disp_text)
 
             sleep(1)
         except KeyboardInterrupt:
