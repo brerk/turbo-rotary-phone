@@ -1,0 +1,32 @@
+import sys
+from time import sleep
+
+from LCD_Manager import send_data, init_lcd, send_command
+from DS18B20_Sensor import read_temp
+
+"""
+1. Realice un programa en Python que despliegue en consola la temperatura sensada por el DS18B20 cada
+segundo.
+"""
+
+
+def main():
+    init_lcd()
+
+    while True:
+
+        try:
+            temp = read_temp()
+
+            disp_text = f"{temp:3.3f} °C"
+            print(disp_text)
+
+            send_data(disp_text)
+
+            sleep(1)
+
+        except KeyboardInterrupt:
+            sys.exit(0)
+
+
+main()

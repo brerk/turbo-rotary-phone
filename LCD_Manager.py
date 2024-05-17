@@ -31,48 +31,74 @@ LCD_ADDR = 0x27
 BLEN = 1  # LCD Backlight State
 
 
-# def init_lcd():
-#     send_command(LCD_INIT_DISPLAY_8PINS_MODE)
-#     sleep(0.005)
-#
-#     send_command(LCD_CHANGE_TO_4PINS_MODE)
-#     sleep(0.005)
-#
-#     send_command(0x28)  # Configurar modo: 2 lineas y caracteres de 35 puntos
-#     sleep(0.005)
-#
-#     send_command(LCD_ENABLE_DISPLAY_NO_CURSOR)
-#     sleep(0.005)
-#
-#     send_command(LCD_CLEAN_SCREEN)
-#     sleep(0.005)
+# commands
+LCD_CLEARDISPLAY = 0x01
+LCD_RETURNHOME = 0x02
+LCD_ENTRYMODESET = 0x04
+LCD_DISPLAYCONTROL = 0x08
+LCD_CURSORSHIFT = 0x10
+LCD_FUNCTIONSET = 0x20
+LCD_SETCGRAMADDR = 0x40
+LCD_SETDDRAMADDR = 0x80
+
+# flags for display entry mode
+LCD_ENTRYRIGHT = 0x00
+LCD_ENTRYLEFT = 0x02
+LCD_ENTRYSHIFTINCREMENT = 0x01
+LCD_ENTRYSHIFTDECREMENT = 0x00
+
+# flags for display on/off control
+LCD_DISPLAYON = 0x04
+LCD_DISPLAYOFF = 0x00
+LCD_CURSORON = 0x02
+LCD_CURSOROFF = 0x00
+LCD_BLINKON = 0x01
+LCD_BLINKOFF = 0x00
+
+# flags for display/cursor shift
+LCD_DISPLAYMOVE = 0x08
+LCD_CURSORMOVE = 0x00
+LCD_MOVERIGHT = 0x04
+LCD_MOVELEFT = 0x00
+
+# flags for function set
+LCD_8BITMODE = 0x10
+LCD_4BITMODE = 0x00
+LCD_2LINE = 0x08
+LCD_1LINE = 0x00
+LCD_5x10DOTS = 0x04
+LCD_5x8DOTS = 0x00
 
 
 def init_lcd():
+    # Waiting for display to be ready
     send_command(0x03)
-    sleep(0.005)
     send_command(0x03)
-    sleep(0.005)
     send_command(0x03)
-    sleep(0.005)
+
+    # Enable 4 bits mode
     send_command(0x02)
-    sleep(0.005)
 
-    send_command(0x28)  # Configurar modo: 2 lineas y caracteres de 5x8 puntos
-    sleep(0.005)
+    send_command(LCD_FUNCTIONSET | LCD_2LINE | LCD_5x8DOTS | LCD_4BITMODE)
+    send_command(LCD_DISPLAYCONTROL | LCD_DISPLAYON)
+    send_command(LCD_CLEARDISPLAY)
 
-    send_command(LCD_ENABLE_DISPLAY_NO_CURSOR)
-    sleep(0.005)
-
-    send_command(LCD_CLEAN_SCREEN)
-    sleep(0.005)
-
-    # Configurar el modo de entrada
     send_command(LCD_ENTRYMODESET | LCD_ENTRYLEFT)
-    sleep(0.005)
+
+    sleep(0.2)
 
 
-def send_routine(raw_data: int, mode: bool):
+def set_position(row: int, column: int):
+    if column < 0 or column > 16:
+        return
+
+    if row < 0 or row > 1:
+        return
+
+    send_command(0x80 + 0x40 * column + row)
+
+
+def send_routine(raw_data: int, mode=True):
     """
     mode: True --> send command
           False --> send data
@@ -86,22 +112,28 @@ def send_routine(raw_data: int, mode: bool):
         raw_data_temp = raw_data_temp | 0x05  # not ENA=1, not RW = 0, not RS = 1
 
     send_word(LCD_ADDR, raw_data_temp)
-    sleep(0.002)
+    sleep(0.0005)
 
     raw_data_temp = raw_data_temp & 0xFB  # Switch not ENA to 0
     send_word(LCD_ADDR, raw_data_temp)
+    sleep(0.0001)
 
     raw_data_temp = (
         raw_data & 0x0F
     ) << 4  # Delete upper nibble and move lower nibble to upper bits
 
-    raw_data_temp = raw_data_temp | 0x04  # not ENA=1, not RW=0, not RS=0
+    if mode:
+        raw_data_temp = raw_data_temp | 0x04  # not ENA=1, not RW=0, not RS=0
+    else:
+        raw_data_temp = raw_data_temp | 0x05  # not ENA=1, not RW = 0, not RS = 1
 
     send_word(LCD_ADDR, raw_data_temp)
-    sleep(0.002)
+    sleep(0.0005)
 
     raw_data_temp = raw_data_temp & 0xFB  # Flip not ENA to 0
     send_word(LCD_ADDR, raw_data_temp)  # End of nibble
+
+    sleep(0.0001)
 
 
 def send_word(addr, data):
@@ -119,6 +151,8 @@ def send_word(addr, data):
 
     BUS.write_byte(addr, temp)
 
+    sleep(0.0001)
+
 
 def send_command(cmd):
     """
@@ -128,6 +162,8 @@ def send_command(cmd):
     """
     send_routine(cmd, True)
 
+    sleep(0.0005)
+
 
 def send_data(data):
     """
@@ -135,12 +171,17 @@ def send_data(data):
     """
     send_routine(data, False)
 
+    sleep(0.0005)
+
 
 # Example usage
 if __name__ == "__main__":
+    text = input("Inserte texto:")
+
     init_lcd()
-    send_data(0x48)  # Display character 'H'
-    send_data(0x65)  # Display character 'e'
-    send_data(0x6C)  # Display character 'l'
-    send_data(0x6C)  # Display character 'l'
-    send_data(0x6F)  # Display character 'o'
+
+    for c in text:
+        print(f"{c=} --> {ord(c)=}")
+        send_data(ord(c))
+
+    print("done")
