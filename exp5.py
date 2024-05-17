@@ -16,7 +16,9 @@ def main():
     init_lcd()
 
     disp_text = "Bravo, Romero, Bravo"
-    send_data(disp_text)
+
+    for c in disp_text:
+        send_data(ord(c))
 
     while True:
         try:
