@@ -27,7 +27,7 @@ def main():
             temp_c = read_temp()
             temp_f = temp_c * (9 / 5) + 32
 
-            disp_text = f"{temp_c:3.3f} {DEGREES_CHAR}C  {temp_f:3.3f}{DEGREES_CHAR}F"
+            disp_text = f"{temp_c:3.1f} {DEGREES_CHAR}C  {temp_f:3.1f}{DEGREES_CHAR}F"
 
             for c in disp_text:
                 send_data(ord(c))
