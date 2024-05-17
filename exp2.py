@@ -13,7 +13,8 @@ def main():
 
     disp_text = "Bravo"
 
-    send_data(disp_text)
+    for c in disp_text:
+        send_data(ord(c))
 
 
 main()

@@ -21,7 +21,8 @@ def main():
             disp_text = f"{temp:3.3f} °C"
             print(disp_text)
 
-            send_data(disp_text)
+            for c in disp_text:
+                send_data(ord(c))
 
             sleep(1)
 
