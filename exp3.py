@@ -8,6 +8,8 @@ from DS18B20_Sensor import read_temp
 en grados centígrados registrada por el DS18B20, actualizada cada segundo.
 """
 
+DEGREES_CHAR = chr(0b11011111)
+
 
 def display_text(text):
     for c in text:
@@ -26,7 +28,7 @@ def main():
         try:
             temp_c = read_temp()
 
-            disp_text = f"{temp_c:3.3f} {chr(0b11011111)}C"
+            disp_text = f"{temp_c:3.3f} {DEGREES_CHAR}C"
 
             display_text(disp_text)
 

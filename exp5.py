@@ -9,6 +9,8 @@ apellido paterno de cada integrante del equipo de trabajo, separados por espacio
 de marquesina izquierda además de la temperatura en la segunda línea.
 """
 
+DEGREES_CHAR = chr(0b11011111)
+
 
 def main():
     init_lcd()
@@ -23,15 +25,13 @@ def main():
             temp_c = read_temp()
             temp_f = temp_c * (9 / 5) + 32
 
-            disp_text = f"{temp_c:3.3f} °C  {temp_f}°F"
+            disp_text = f"{temp_c:3.3f} {DEGREES_CHAR}C  {temp_f}{DEGREES_CHAR}F"
 
             for c in disp_text:
                 send_data(ord(c))
 
             sleep(1)
 
-            # shift row 0 to left
-            set_position(0, 0)
             left_shift()
         except KeyboardInterrupt:
             break
