@@ -1,6 +1,6 @@
 from time import sleep
 
-from LCD_Manager import send_data, init_lcd, set_position
+from LCD_Manager import send_data, init_lcd, set_position, left_shift
 from DS18B20_Sensor import read_temp
 
 """
@@ -13,14 +13,13 @@ de marquesina izquierda además de la temperatura en la segunda línea.
 def main():
     init_lcd()
 
-    disp_text = "Bravo"
+    disp_text = "Bravo, Romero, Bravo"
     send_data(disp_text)
 
-    set_position(1, 0)
-
     while True:
-
         try:
+            set_position(1, 0)
+
             temp_c = read_temp()
             temp_f = temp_c * (9 / 5) + 32
 
@@ -30,6 +29,10 @@ def main():
                 send_data(ord(c))
 
             sleep(1)
+
+            # shift row 0 to left
+            set_position(0, 0)
+            left_shift()
         except KeyboardInterrupt:
             break
 
