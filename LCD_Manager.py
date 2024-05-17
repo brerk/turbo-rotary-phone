@@ -74,6 +74,14 @@ def left_shift():
     send_command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT)
 
 
+def right_shift():
+    # LCD_CURSORSHIFT: Enable screen shift
+    # LCD_DISPLAYMOVE: Movement affect display content, not cursor
+    # LCD_MOVELEFT: Movement direction --> right
+
+    send_command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT)
+
+
 def set_position(row: int, column: int):
     if column < 0 or column > 16:
         return

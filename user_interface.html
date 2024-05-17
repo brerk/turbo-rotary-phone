@@ -1,0 +1,68 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<style>
+body {background-color: powderblue;}
+h1   {color: blue;}
+
+.slidecontainer {
+  margin: auto;
+  width: 80%;
+  padding: 10px;
+
+}
+
+.slider {
+  width: 100%;
+}
+</style>
+
+</head>
+<body>
+
+<h1>Practica 8 - Control de intensidad de encendido de Lampara AC.</h1>
+
+Control de velocidad del Corrimiento
+
+<div class="slidecontainer">
+  <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+</div>
+
+<p id="temp">TEMP_HOLDER</p>
+
+</body>
+
+<script>
+var slider = document.getElementById("myRange");
+// var output = document.getElementById("demo");
+output.innerHTML = slider.value; // Display the default slider value
+
+// Update the current slider value (each time you drag the slider handle)
+slider.oninput = function() {
+  output.innerHTML = this.value;
+  console.log("New Value:"+ this.value)
+
+  submit("pwr", this.value)
+} 
+
+// function handle(sender, action, value){
+// 	// deactivateAll();
+// 	// activate(sender);
+// 	submit(action, value);
+// }
+
+function submit(action, value){
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", window.location.href, true);
+	xhr.setRequestHeader('Content-Type', 'application/json');
+	xhr.send(JSON.stringify({
+		'action' : action,
+		'value' :  value,
+	}));
+}
+
+</script>
+
+</html> 
+
+
